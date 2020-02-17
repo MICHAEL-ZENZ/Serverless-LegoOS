@@ -5,9 +5,22 @@
 #ifndef _LEGO_MEMORY_STATE_H
 #define _LEGO_MEMORY_STATE_H
 
-#include <lego/slab.h> // kmalloc
-#include <lego/fit_ibapi.h>
+
+// temp includes
+#include <lego/stat.h>
+#include <lego/slab.h>
+#include <lego/uaccess.h>
+#include <lego/files.h>
 #include <lego/syscalls.h>
+#include <lego/comp_common.h>
+#include <lego/comp_storage.h>
+#include <lego/seq_file.h>
+#include <lego/timer.h>
+#include <lego/fit_ibapi.h>
+#include <lego/kernel.h>
+#include <processor/fs.h>
+#include <processor/processor.h>
+
 #include <lego/rpc/struct_p2m.h>
 
 static ssize_t p2m_state(long number)
