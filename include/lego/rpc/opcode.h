@@ -172,4 +172,7 @@ static inline char *ret_to_string(u32 ret_status)
 	return "Undefined ret_status";
 }
 
+#define P2M_STATE_BASE		((__u32)0x70000000)
+#define P2M_STATE_DUMMY 	(P2M_STATE_BASE + 1)
+
 #endif /* _LEGO_RPC_OPCODE_H_ */
