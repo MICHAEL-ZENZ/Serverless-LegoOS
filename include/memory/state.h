@@ -7,7 +7,7 @@
 
 
 // temp includes
-#include <lego/stat.h>
+//#include <lego/stat.h>
 #include <lego/slab.h>
 #include <lego/uaccess.h>
 #include <lego/files.h>
