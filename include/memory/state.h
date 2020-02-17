@@ -55,6 +55,8 @@ static ssize_t p2m_state(long number)
 
     return retval;
 
+out:
+    return -1;
 }
 
 
