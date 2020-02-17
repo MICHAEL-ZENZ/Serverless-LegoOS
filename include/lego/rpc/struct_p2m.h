@@ -394,7 +394,6 @@ struct p2m_fsync_struct {
 
 
 // State Management
-
 struct p2m_state_struct {
     long number;
 };
