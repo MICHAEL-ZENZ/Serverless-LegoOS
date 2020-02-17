@@ -6,6 +6,8 @@
 #include <linux/unistd.h>
 #include <string.h>
 
+#include <uapi/state.h>
+
 static void lego_uname(void)
 {
 	struct utsname foo;
