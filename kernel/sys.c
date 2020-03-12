@@ -860,6 +860,9 @@ SYSCALL_DEFINE6(remote_send_reply, const unsigned int, dst_nid, const pid_t, dst
 	unsigned long start_ns, end_ns;
 	start_ns = sched_clock();
 
+	//append current timestamp into msg
+	
+
 	// TODO: Sanity Checking
 	// pr_info("~~~~~~~dst_nid: %d, dst_pid: %d~~~~\n", dst_nid, dst_pid);
 
@@ -892,15 +895,18 @@ SYSCALL_DEFINE6(remote_send_reply, const unsigned int, dst_nid, const pid_t, dst
 	// pr_info("~~~~~~~~Done Turn~~~~~~~~\n");
 
 	// pr_info("~~~~~~~~Assigning hdr~~~~~~~~\n");
+	
 	fill_p2p_msg_hdr(hdr, __NR_remote_send_reply, LEGO_LOCAL_NID, current->pid, dst_nid, dst_pid, msg_size);
 	// DEBUG use only
-	print_p2p_msg_header(hdr);
+	// print_p2p_msg_header(hdr);
 
 	// pr_info("~~~~~~~~Copying msg body~~~~~~~~\n");
 	copy_from_user(msg_body, msg, msg_size);
 
 	// pr_info("~~~~~~~~About to make remote send call~~~~~~~~\n");
 	/* Synchronously send it out */
+	sprintf(msg_body,"ss:%d,%s",sched_clock(),msg_body);
+
 	ret = ibapi_send_reply_imm(dst_nid, out_msg, out_len, in_msg, ret_size, false);
 	// pr_info("~~~~~~~~Returned from remote send call~~~~~~~~\n");
 
@@ -909,6 +915,9 @@ SYSCALL_DEFINE6(remote_send_reply, const unsigned int, dst_nid, const pid_t, dst
 			FUNC, smp_processor_id(), current->pid,
 			__builtin_return_address(0));
 	}
+
+	sprintf(in_msg,"srr:%d,%s",sched_clock(),in_msg);
+	ret_size=strlen(in_msg)+1;
 
 	// Copy the return buffer back to user's ret buf
 	copy_to_user(retbuf, in_msg, ret_size);
@@ -950,7 +959,8 @@ SYSCALL_DEFINE2(remote_recv, void __user *, recv_msg, unsigned long, recv_size)
 	spin_unlock(&(p->msg_list_lock));
 
 	copy_to_user(recv_msg, r_msg->msg, r_msg->msg_size);
+	sprintf(recv_msg,"%s,rscall:%d",recv_msg,sched_clock());
 
-	return r_msg->msg_size;
+	return strlen(recv_msg);
 }
 #endif /* CONFIG_EPOLL */

@@ -16,6 +16,7 @@
 #include <lego/pid.h>
 #include <processor/processor.h>
 #include <processor/vnode.h>
+#include <lego/sched.h>
 #include <monitor/common.h>
 
 #define MAX_INIT_ARGS	CONFIG_INIT_ENV_ARG_LIMIT
@@ -24,6 +25,20 @@
 #define MAX_RXBUF_SIZE	(20 * PAGE_SIZE)
 
 #define MAX_P2P_MSG_SIZE 100
+
+
+/**
+ * sched_clock
+ *
+ * Scheduler clock - returns current time in nanosec units.
+ * This is default implementation.
+ * Architectures and sub-architectures can override this.
+ */
+unsigned long long __weak sched_clock(void)
+{
+	return (unsigned long long)(jiffies - INITIAL_JIFFIES)
+					* (NSEC_PER_SEC / HZ);
+}
 
 const int ECHO_LEN = 49;
 const char* ECHO = "~~~WASSUP THIS IS UNA Echo MSG from Receiver~~~\n";
@@ -71,10 +86,12 @@ static void handle_remote_send(struct info_struct *info)
 	// pr_info("%s", msg_body);
 	// pr_info("\n---MSG END---\n");
 
-	int ret = enqueue_msg(hdr->dst_pid, msg_body, hdr->msg_size);
+	sprintf(msg_body,"sr:%d,%s",sched_clock(),msg_body);
+	int msg_size=strlen(msg_body)+1;
+	int ret = enqueue_msg(hdr->dst_pid, msg_body, msg_size);
 
 	if (ret) {
-		ibapi_reply_message(SUCCESS_ENQUEUED, SUCCESS_ENQUEUED_LEN, info->desc);
+		ibapi_reply_message(msg_body, msg_size, info->desc);
 	} else {
 		ibapi_reply_message(FAIL_ENQUEUED, FAIL_ENQUEUED_LEN, info->desc);
 	}
