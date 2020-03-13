@@ -24,21 +24,7 @@
 
 #define MAX_RXBUF_SIZE	(20 * PAGE_SIZE)
 
-#define MAX_P2P_MSG_SIZE 100
-
-
-/**
- * sched_clock
- *
- * Scheduler clock - returns current time in nanosec units.
- * This is default implementation.
- * Architectures and sub-architectures can override this.
- */
-unsigned long long __weak sched_clock(void)
-{
-	return (unsigned long long)(jiffies - INITIAL_JIFFIES)
-					* (NSEC_PER_SEC / HZ);
-}
+#define MAX_P2P_MSG_SIZE 512
 
 const int ECHO_LEN = 49;
 const char* ECHO = "~~~WASSUP THIS IS UNA Echo MSG from Receiver~~~\n";
